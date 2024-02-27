@@ -14,7 +14,7 @@
  | existing namespaces of App\* namespaced-classes.
  */
 defined('APP_NAMESPACE') || define('APP_NAMESPACE', 'App');
-
+define('ASSET_URL', 'http://localhost:8080/employee_attendance');
 /*
  | --------------------------------------------------------------------------
  | Composer Path

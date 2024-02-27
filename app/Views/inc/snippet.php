@@ -10,7 +10,7 @@
     <meta name="author" content="">
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="../assets/images/favicon.png">
-    <title>Material pro admin Template - The Ultimate Multipurpose admin template</title>
+    <title>Marks Attendance</title>
     <link rel="canonical" href="https://www.wrappixel.com/templates/xtremeadmin/" />
     <link href="../assets/libs/chartist/dist/chartist.min.css" rel="stylesheet">
     <link href="../../dist/js/pages/chartist/chartist-init.css" rel="stylesheet">
@@ -51,6 +51,19 @@
             margin: 20px 0;
             border-radius: 8px;
             background-color: #fff;
+        }
+
+        .has-error,
+        .help-block {
+            color: #a94442;
+            /* Red color for error messages */
+        }
+        li a{
+            text-decoration: none;
+        }
+
+        #EmpTable_wrapper {
+            margin-top: 20px;
         }
     </style>
 </head>

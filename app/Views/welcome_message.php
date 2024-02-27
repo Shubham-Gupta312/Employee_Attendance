@@ -34,26 +34,26 @@
                         <form id="addEmployee">
                             <div class="row">
                                 <div class="col-lg-6 col-md-6">
-                                    <label for="name">Employee Name</label>
-                                    <input type="text" class="form-control" id="name" name="name"
+                                    <label for="name">Employee Name</label><span class="text-danger">*</span>
+                                    <input type="text" class="form-control specialChars" id="name" name="name"
                                         placeholder="Enter Employee Name">
                                 </div>
                                 <div class="col-lg-6 col-md-6">
-                                    <label for="email">Employee Email</label>
+                                    <label for="email">Employee Email</label><span class="text-danger">*</span>
                                     <input type="email" class="form-control" name="email" id="email"
                                         placeholder="Enter Employee Email-Id">
                                 </div>
                             </div>
                             <div class="row mt-2">
                                 <div class="col-lg-6 col-md-6">
-                                    <label for="phone">Employee Phone No.</label>
+                                    <label for="phone">Employee Phone No.</label><span class="text-danger">*</span>
                                     <input type="tel" class="form-control onlynumbers" id="phone" name="phone"
                                         maxlength="10" placeholder="Enter Employee Phone No.">
                                 </div>
                                 <div class="col-lg-6 col-md-6">
-                                    <label for="address">Employee Address</label>
-                                    <textarea class="form-control specialChars" placeholder="Enter Employee Address" name="address"
-                                        id="address" rows="1"></textarea>
+                                    <label for="address">Employee Address</label><span class="text-danger">*</span>
+                                    <textarea class="form-control specialChars" placeholder="Enter Employee Address"
+                                        name="address" id="address" rows="1"></textarea>
                                 </div>
                             </div>
                             <button type="submit" id="save" name="save" class="btn btn-primary">Submit</button>
@@ -61,7 +61,7 @@
                     </div>
                 </div>
                 <!-- Employee Form End -->
-                <table class="table table-bordered mt-3">
+                <table class="table table-bordered" id="EmpTable">
                     <thead>
                         <tr>
                             <th scope="col">Sl. No.</th>
@@ -74,32 +74,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td>10001</td>
-                            <td>Otto</td>
-                            <td>otto@mdo.com</td>
-                            <td>09898797898</td>
-                            <td>Xyz, abc</td>
-                            <td>
-                                <button class="btn btn-outline-success edit" id="edit" style="border-radius: 50%;">
-                                    <i class="bi bi-check-lg"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">2</th>
-                            <td>10002</td>
-                            <td>Jacob</td>
-                            <td>@fat</td>
-                            <td>68368698326</td>
-                            <td>Xyz, abc</td>
-                            <td>
-                                <button class="btn btn-outline-success edit" id="edit" style="border-radius: 50%;">
-                                    <i class="bi bi-check-lg"></i>
-                                </button>
-                            </td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -125,6 +99,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/js/bootstrapValidator.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/js/bootstrapValidator.min.js"></script>
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+<!-- DataTables JavaScript -->
+<script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 
 <script>
     jQuery(document).ready(function ($) {
@@ -180,13 +158,53 @@
             e.preventDefault();
             var $form = $(e.target);
             var formData = $form.serialize();
-            console.log(formData);
+            // console.log(formData);
             // You can perform further actions here, such as AJAX submission
+            $.ajax({
+                url: "<?= base_url('admin/add_employee') ?>",
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    // console.log(response);
+                    if (response.status === 'true') {
+                        $('.emp_container').hide();
+                        table.ajax.reload(null, false);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    // Handle error
+                    console.error(error);
+                }
+            });
         });
     });
-</script>
+    // Listen for the DataTable redraw event
+    $('#EmpTable').on('draw.dt', function () {
+        // Fetch the newly added record after DataTable redraw
+        var lastAddedRowData = table.row(0).data();
+        // Get the index of the last column
+        var lastColumnIndex = table.columns().indexes().length - 1;
+        // Add a button to the last column of the first row
+        var buttonHtml = '<button class="btn btn-outline-primary sendEmail" id="sendEmail" style="border-radius: 50%;"><i class="bi bi-envelope-arrow-up"></i></button>';
+        // Get the cell for the last column in the first row
+        var cell = table.cell(':eq(0)', lastColumnIndex);
+        // Append the button HTML to the cell
+        cell.node().innerHTML += buttonHtml;
+    });
 
-<script>
+    // Send Email Function
+    $(document).on('click', '#sendEmail', function (e) {
+        e.preventDefault();
+        console.log('clicked');
+        $.ajax({
+            method: "POST",
+            url: "<?= base_url('admin/reset_passwaord') ?>",
+            success: function (response) {
+                console.log(response);
+            }
+        });
+    });
+
     // only number allowed
     $(document).ready(function () {
         $('body').on('keyup', ".onlynumbers", function (event) {
@@ -195,7 +213,8 @@
 
         //  only alphabet, numeric & some special
         function filterOnlyAllowedCharacters(input) {
-            var allowedChars = /[#,.a-zA-Z0-9\s]/g; // Define allowed characters
+            // var allowedChars = /[#,.a-zA-Z0-9\s]/g; // Define allowed characters
+            var allowedChars = /[!,@,$,%,^,&,*,(,),+,-,=]/g; // Define allowed characters
             return input.replace(allowedChars, ''); // Replace any character not in the allowed list with an empty string
         }
 
@@ -206,10 +225,65 @@
         // Open Employee Add Form
         $('#add_employee').click(function (e) {
             e.preventDefault();
-            console.log('clicked');
+            // console.log('clicked');
             $('.emp_container').show();
         });
     });
-</script>
 
+    // Fetch Employee Records
+    var table = $('#EmpTable').DataTable({
+        processing: true,
+        serverSide: true,
+        paging: true,
+        "fnCreatedRow": function (row, data, index) {
+            var pageInfo = table.page.info(); // Get page information
+            var currentPage = pageInfo.page; // Current page index
+            var pageLength = pageInfo.length; // Number of rows per page
+            var rowNumber = index + 1 + (currentPage * pageLength); // Calculate row number
+            $('td', row).eq(0).html(rowNumber); // Update index colum
+        },
+        ajax: {
+            url: "<?= base_url('admin/fetch_employee') ?>",
+            type: "GET"
+        },
+        drawCallback: function (settings) {
+            // console.log('Table redrawn:', settings);F
+        }
+    });
+
+    // Function to change Button CSS 
+    function setButtonStyles(button, status) {
+        if (status === 1) {
+            button.removeClass('btn-outline-danger').addClass('btn-outline-success').html('<i class="bi bi-check-lg"></i>');
+        } else {
+            button.removeClass('btn-outline-success').addClass('btn-outline-danger').html('<i class="bi bi-x"></i>');
+        }
+    }
+    //  Set Status of Employee
+    var table = $('#EmpTable').DataTable();
+    $(document).on('click', '#active', function (e) {
+        e.preventDefault();
+        var button = $(this);
+        var data = table.row(button.closest('tr')).data();
+        var EmpID = data[0];
+        // console.log('clicked', EmpID);
+        $.ajax({
+            method: "POST",
+            url: "<?= base_url('admin/setStatus') ?>",
+            data: {
+                'id': EmpID
+            },
+            success: function (response) {
+                // console.log(response);
+                if (response.status == 'true') {
+                    var newStatus = response.newStatus;
+                    // Update the button style
+                    setButtonStyles(button, newStatus);
+                } else {
+                    console.log('Failed to Update Status');
+                }
+            }
+        });
+    });
+</script>
 <?= $this->endSection() ?>

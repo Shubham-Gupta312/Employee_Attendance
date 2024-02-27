@@ -46,24 +46,12 @@
             <div class="auth-box p-4 bg-white rounded">
                 <div>
                     <div class="logo">
-                        <h3 class="box-title mb-3">Sign Up</h3>
+                        <h3 class="box-title mb-3">Reset Password</h3>
                     </div>
                     <!-- Form -->
                     <div class="row">
                         <div class="col-12">
-                            <form class="form-horizontal mt-3 form-material" id="registerForm">
-                                <div class="form-group mb-3">
-                                    <div class="col-xs-12">
-                                        <input class="form-control" type="text" required="" name="name" id="name"
-                                            placeholder="Name">
-                                    </div>
-                                </div>
-                                <div class="form-group mb-3 ">
-                                    <div class="col-xs-12">
-                                        <input class="form-control" type="text" required="" name="email" id="email"
-                                            placeholder="Email">
-                                    </div>
-                                </div>
+                            <form class="form-horizontal mt-3 form-material" id="resetForm">
                                 <div class="form-group mb-3 ">
                                     <div class="col-xs-12">
                                         <input class="form-control" type="password" required="" name="password"
@@ -80,13 +68,7 @@
                                     <div class="col-xs-12">
                                         <button
                                             class="btn btn-info btn-lg btn-block text-uppercase waves-effect waves-light"
-                                            name="save" id="save" type="submit">Sign Up</button>
-                                    </div>
-                                </div>
-                                <div class="form-group mb-0 mt-2 ">
-                                    <div class="col-sm-12 text-center ">
-                                        Already have an account? <a href="<?= base_url('admin/login') ?>"
-                                            class="text-info ml-1 ">Sign In</a>
+                                            name="reset" id="reset" type="submit">Submit</button>
                                     </div>
                                 </div>
                             </form>
@@ -104,7 +86,8 @@
     <script src="../assets/libs/popper.js/dist/umd/popper.min.js "></script>
     <script src="../assets/libs/bootstrap/dist/js/bootstrap.min.js "></script>
     <!-- jquery Validation Plugin -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/js/bootstrapValidator.min.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/js/bootstrapValidator.min.js"></script>
     <!-- ============================================================== -->
     <!-- This page plugin js -->
     <!-- ============================================================== -->

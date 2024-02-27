@@ -92,4 +92,8 @@ class AuthController extends BaseController
         session()->destroy();
         return redirect()->to(base_url('admin/login'));
     }
+
+    public function ResetPass(){
+        return view('auth/reset_pass');
+    }
 }
