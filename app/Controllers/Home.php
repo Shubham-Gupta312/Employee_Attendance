@@ -8,6 +8,10 @@ class Home extends BaseController
     {
         return view('welcome_message');
     }
+    public function dashboard()
+    {
+        return view('admin/dashboard');
+    }
     public function add_employee()
     {
         $name = $this->request->getPost('name');
@@ -171,6 +175,6 @@ class Home extends BaseController
 
     public function reports()
     {
-        return view('reports');
+        return view('admin/reports');
     }
 }
