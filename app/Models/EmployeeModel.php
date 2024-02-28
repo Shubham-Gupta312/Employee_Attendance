@@ -23,4 +23,20 @@ class EmployeeModel extends Model
         // Update the status in the database
         return $this->set(['status' => $newStatus])->where('id', $id)->update();
     }
+
+    public function updateTimestamp($empId)
+    {
+        // Update only the 'updated_at' timestamp
+        try {
+            $this->set('updated_at', date('Y-m-d H:i:s'))
+                ->where('id', $empId)
+                ->update();
+            return true; // Return true if update succeeds
+        } catch (\Exception $e) {
+            // Log the exception
+            // log_message('error', 'Exception in updateTimestamp: ' . $e->getMessage());
+            return false; // Return false if update fails
+        }
+    }
+
 }

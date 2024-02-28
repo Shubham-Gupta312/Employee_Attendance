@@ -16,6 +16,7 @@ $routes->group('admin', static function ($routes) {
 
 // User Reset Password 
 $routes->get('reset_pswrd', 'AuthController::ResetPass');
+$routes->post('reset_pswrd', 'AuthController::ResetPass');
 $routes->get('/', 'Home::index');
 
 $routes->group('admin', ['filter' => 'IsAdminLogin'], static function ($routes){

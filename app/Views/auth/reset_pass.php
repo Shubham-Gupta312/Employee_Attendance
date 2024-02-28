@@ -96,26 +96,8 @@
         $(".preloader ").fadeOut();
 
         jQuery(document).ready(function (e) {
-            $('#registerForm').bootstrapValidator({
+            $('#resetForm').bootstrapValidator({
                 fields: {
-                    'name': {
-                        validators: {
-                            notEmpty: {
-                                message: "Please Enter Name"
-                            }
-                        }
-                    },
-                    'email': {
-                        validators: {
-                            notEmpty: {
-                                message: "Please enter email."
-                            },
-                            regexp: {
-                                regexp: /^[_A-Za-zA-Z0-9-]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[a-z0-9-]+)*(\.[A-Za-z]{2,10})$/,
-                                message: 'Please enter valid email id'
-                            }
-                        }
-                    },
                     'password': {
                         validators: {
                             notEmpty: {
@@ -147,22 +129,22 @@
                 // Get the BootstrapValidator instance
                 var bv = $form.data('bootstrapValidator');
                 // Serialize form data
-                var formData = $form.find('input[name="name"], input[name="email"], input[name="password"]').serialize();
+                var formData = $form.serialize();
                 // Log form data to console
-                // console.log(formData);
+                console.log(formData);
                 // Use AJAX to submit form data
                 $.ajax({
-                    url: "<?= base_url('admin/register') ?>",
+                    url: "<?= base_url('reset_pswrd') ?>",
                     type: 'POST',
                     data: formData,
                     success: function (response) {
-                        // console.log(response);
-                        if (response.status === 'true') {
-                            // Reset form inputs
-                            $('#registerForm')[0].reset();
-                            // Redirect to login page
-                            window.location.href = "<?= base_url('admin/login') ?>";
-                        }
+                        console.log(response);
+                        // if (response.status === 'true') {
+                        //     // Reset form inputs
+                        //     $('#registerForm')[0].reset();
+                        //     // Redirect to login page
+                        //     window.location.href = "<?= base_url('admin/login') ?>";
+                        // }
                     },
                     error: function (xhr, status, error) {
                         // Handle error

@@ -93,7 +93,69 @@ class AuthController extends BaseController
         return redirect()->to(base_url('admin/login'));
     }
 
-    public function ResetPass(){
+    // public function ResetPass()
+    // {
+    //     if ($this->request->getMethod() == 'get') {
+    //         return view('auth/reset_pass');
+    //     }elseif($this->request->getMethod() == 'post'){
+    //         $password = $this->request->getPost('password');
+
+    //         $value = [
+    //             'password' => $password
+    //         ];
+
+    //         $resetPass = new \App\Models\EmployeeModel();
+    //         $query = $resetPass->insert($value);
+
+    //         if(!$query){
+    //             echo "fail";
+    //         }
+    //         else{
+    //             echo "success";
+    //         }
+    //     }
+    // }
+
+    // public function ResetPass($token=null)
+    // {
+    //     if ($this->request->getMethod() == 'get') {
+    //         return view('auth/reset_pass');
+    //     } elseif ($this->request->getMethod() == 'post') {
+    //         if(!empty($token)){
+    //             $VerifyModel = new \App\Models\EmployeeModel();
+    //             $userData = $VerifyModel->verifyToken($token);
+    //             if(!empty($userData)){
+
+    //             }else{
+    //                 echo "NO user found";
+    //             }
+    //         }else{
+    //             echo 'Unauthorized Access token unavailable';
+    //         }
+    //     }
+    // }
+    public function ResetPass()
+{
+    if ($this->request->getMethod() == 'get') {
         return view('auth/reset_pass');
+    } elseif ($this->request->getMethod() == 'post') {
+        // Fetch the token from the URL segment
+        $token = $this->request->uri->getSegment(3); // Assuming the token is in the third segment of the URL
+        
+        if (!empty($token)) {
+            // Here, you can verify the token and update the password in the database
+            // Your verification and password update code goes here
+            echo "Token: " . $token; // For testing purposes, you can just echo the token
+            exit(); // This will stop execution and display the token. Remove it once you have identified the issue.
+        } else {
+            // Token not found in the URL
+            echo "Token not provided";
+            exit(); // This will stop execution and display the error message. Remove it once you have identified the issue.
+        }
     }
+}
+
+
+
+
 }

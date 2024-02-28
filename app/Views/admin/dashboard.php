@@ -195,12 +195,21 @@
     // Send Email Function
     $(document).on('click', '#sendEmail', function (e) {
         e.preventDefault();
+        var lastAddedRowData = table.row(0).data();
+        var id = lastAddedRowData[0];
         console.log('clicked');
         $.ajax({
             method: "POST",
             url: "<?= base_url('admin/reset_password') ?>",
+            data: {
+                'id' : id,
+            },
             success: function (response) {
                 console.log(response);
+                if(response.status == 'true'){
+                    $('#sendEmail').hide();
+                    alert('Email sent Successfully to the registered Email-Id');
+                }
             }
         });
     });

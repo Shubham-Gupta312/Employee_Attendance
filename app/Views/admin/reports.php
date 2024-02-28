@@ -36,8 +36,7 @@
                         <th scope="col">Email</th>
                         <th scope="col">Mobile No.</th>
                         <th scope="col">Date</th>
-                        <th scope="col">Check-In</th>
-                        <th scope="col">Check-Out</th>
+                        <th scope="col">Today's Attendance</th>
                         <th scope="col">Longitude</th>
                         <th scope="col">Latitude</th>
                         <th scope="col">Location</th>
@@ -52,7 +51,6 @@
                         <td>7562378894</td>
                         <td>2/27/2024</td>
                         <td>09:45 AM</td>
-                        <td>06:30 PM</td>
                         <td>32.2432° N</td>
                         <td>77.1892° E</td>
                         <td>Manali</td>
@@ -65,7 +63,6 @@
                         <td>6303124318</td>
                         <td>2/27/2024</td>
                         <td>09:45 AM</td>
-                        <td>06:30 PM</td>
                         <td>32.2432° N</td>
                         <td>77.1892° E</td>
                         <td>Manali</td>
@@ -78,7 +75,6 @@
                         <td>6783645189</td>
                         <td>2/27/2024</td>
                         <td>08:45 AM</td>
-                        <td>07:30 PM</td>
                         <td>12.9716° N</td>
                         <td>77.5946° E</td>
                         <td>banglore</td>
@@ -91,7 +87,6 @@
                         <td>9876645189</td>
                         <td>2/27/2024</td>
                         <td>08:45 AM</td>
-                        <td>07:30 PM</td>
                         <td>15.9716° N</td>
                         <td>88.5946° E</td>
                         <td>banglore</td>
@@ -104,7 +99,6 @@
                         <td>7776634699</td>
                         <td>2/27/2024</td>
                         <td>10:00 AM</td>
-                        <td>07:30 PM</td>
                         <td>14.2251° N</td>
                         <td>76.3980° E</td>
                         <td>chitradurga</td>
@@ -117,7 +111,6 @@
                         <td>76451089279</td>
                         <td>2/27/2024</td>
                         <td>09:45 AM</td>
-                        <td>07:00 PM</td>
                         <td>18.9716° N</td>
                         <td>78.5946° E</td>
                         <td>banglore</td>
@@ -130,7 +123,6 @@
                         <td>8056431072</td>
                         <td>2/27/2024</td>
                         <td>09:00 AM</td>
-                        <td>06:30 PM</td>
                         <td>15.9716° N</td>
                         <td>88.9946° E</td>
                         <td>banglore</td>
@@ -143,7 +135,6 @@
                         <td>7658392019</td>
                         <td>2/27/2024</td>
                         <td>09:30 AM</td>
-                        <td>06:00 PM</td>
                         <td>17.9716° N</td>
                         <td>18.5946° E</td>
                         <td>Hasan</td>
@@ -156,7 +147,6 @@
                         <td>7699017829</td>
                         <td>2/27/2024</td>
                         <td>10:00 AM</td>
-                        <td>06:00 PM</td>
                         <td>15.9716° N</td>
                         <td>88.5946° E</td>
                         <td>banglore</td>
@@ -169,7 +159,6 @@
                         <td>8088763827</td>
                         <td>2/27/2024</td>
                         <td>09:30 AM</td>
-                        <td>06:30 PM</td>
                         <td>13.9716° N</td>
                         <td>19.5946° E</td>
                         <td>Hubli</td>
@@ -182,7 +171,6 @@
                         <td>7676284910</td>
                         <td>2/27/2024</td>
                         <td>09:30 AM</td>
-                        <td>06:30 PM</td>
                         <td>15.9716° N</td>
                         <td>88.5946° E</td>
                         <td>banglore</td>

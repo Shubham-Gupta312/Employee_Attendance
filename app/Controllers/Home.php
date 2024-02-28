@@ -6,7 +6,7 @@ class Home extends BaseController
 {
     public function index(): string
     {
-        return view('welcome_message');
+        return view('admin/dashboard');
     }
     public function dashboard()
     {
@@ -170,8 +170,53 @@ class Home extends BaseController
 
     public function resetPassword()
     {
-        echo "Send Reset Password Mail Code Here";
+        try {
+            $empId = $this->request->getPost('id');
+    
+            // Fetch the last inserted data from the database
+            $employeeModel = new \App\Models\EmployeeModel();
+            $data = $employeeModel->find($empId);
+    
+            // Check if data exists and fetch the email
+            if ($data) {
+                if ($employeeModel->updateTimestamp($empId)) {
+                    $token = $data['emp_id'];
+                    $empEmail = $data['emp_email'];
+    
+                    // Create and send the email
+                    $email = \Config\Services::email();
+                    $email->setFrom('saxenaaditi525@gmail.com', 'Shubham Gupta');
+                    $email->setTo($empEmail);
+                    $email->setSubject('Reset Password Link');
+                    $message = "Hello,<br><br>Reset Password Link: " . base_url('reset_pswrd') . '?token=' . $token;
+                    $email->setMessage($message);
+    
+                    // Send the email
+                    if ($email->send()) {
+                        $response = ['status' => 'true', 'message' => 'Reset Password Email sent successfully'];
+                    } else {
+                        $response = ['status' => 'false', 'message' => 'Reset Password Email failed to send'];
+                    }
+                } else {
+                    $response = ['status' => 'false', 'message' => 'Failed to update timestamp'];
+                }
+            } else {
+                $response = ['status' => 'false', 'message' => 'Employee data not found'];
+            }
+    
+            // Return the JSON response
+            return $this->response->setJSON($response);
+        } catch (\Exception $e) {
+            // Log the exception
+            log_message('error', 'Exception in resetPassword: ' . $e->getMessage());
+    
+            // Return an error response
+            return $this->response->setJSON(['status' => 'false', 'message' => 'Internal server error']);
+        }
     }
+    
+
+
 
     public function reports()
     {
