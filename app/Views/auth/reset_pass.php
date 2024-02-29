@@ -53,6 +53,7 @@
                         <div class="col-12">
                             <form class="form-horizontal mt-3 form-material" id="resetForm">
                                 <div class="form-group mb-3 ">
+                                    <input type="hidden" name="value" value="<?php echo ($emp_id) ? $emp_id : ''; ?>">
                                     <div class="col-xs-12">
                                         <input class="form-control" type="password" required="" name="password"
                                             id="password" placeholder="Password">

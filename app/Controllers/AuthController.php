@@ -93,67 +93,75 @@ class AuthController extends BaseController
         return redirect()->to(base_url('admin/login'));
     }
 
-    // public function ResetPass()
-    // {
-    //     if ($this->request->getMethod() == 'get') {
-    //         return view('auth/reset_pass');
-    //     }elseif($this->request->getMethod() == 'post'){
-    //         $password = $this->request->getPost('password');
+    public function ResetPass($token = null)
+    {
+        if ($this->request->getMethod() == 'get') {
+            $request = \Config\Services::request();
+            // Get the full URL including query parameters
+            $token = $request->getGet('token');
+            // echo $token;    
+            $employeeModel = new \App\Models\EmployeeModel();
+            // Fetch the employee ID based on the token from the database
+            $emp_id = $employeeModel->getEmpIdByToken($token);
 
-    //         $value = [
-    //             'password' => $password
-    //         ];
+            // Check if employee ID is found
+            if ($emp_id) {
+                // // Debugging statement
+                // echo "Token received: " . $token . "<br>";
+                // Pass the employee ID value to the view
+                $data['emp_id'] = $emp_id;
+                // print_r($data);
+                return view('auth/reset_pass', $data);
+            } else {
+                // $message = ['status' => 'false', 'message' => "No employee ID found for the provided token."];
+                $message = ['status' => 'false', 'message' => "UnAuthoried Access."];
+                return $this->response->setJSON($message);
+            }
+            // POST REQUEST
+        } elseif ($this->request->getMethod() == 'post') {
+            $postData = $this->request->getPost();
 
-    //         $resetPass = new \App\Models\EmployeeModel();
-    //         $query = $resetPass->insert($value);
+            // Retrieve the token from the POST data
+            if (isset($postData['value'])) {
+                $token = $postData['value'];
+            } else {
+                // Handle the case where the 'value' parameter is not set in the POST data
+                // echo "Token not found in POST data.";
+                $message = ['status' => 'false', 'message' => 'UnAuthorized Token Access'];
+                return $this->response->setJSON($message);
+            }
 
-    //         if(!$query){
-    //             echo "fail";
-    //         }
-    //         else{
-    //             echo "success";
-    //         }
-    //     }
-    // }
+            // Get the password from the POST request
+            $password = $this->request->getPost('password');
 
-    // public function ResetPass($token=null)
-    // {
-    //     if ($this->request->getMethod() == 'get') {
-    //         return view('auth/reset_pass');
-    //     } elseif ($this->request->getMethod() == 'post') {
-    //         if(!empty($token)){
-    //             $VerifyModel = new \App\Models\EmployeeModel();
-    //             $userData = $VerifyModel->verifyToken($token);
-    //             if(!empty($userData)){
+            $employeeModel = new \App\Models\EmployeeModel();
+            $data = $employeeModel->getDataByToken($token);
+            if ($data) {
+                // Data found for the token
+                // echo "Update the password"
+                $updateData = ['password' => $password]; // Assuming 'password' is the column name in your database
+                $updated = $employeeModel->updatePassword($data->id, $updateData); // Assuming 'id' is the primary key column name
 
-    //             }else{
-    //                 echo "NO user found";
-    //             }
-    //         }else{
-    //             echo 'Unauthorized Access token unavailable';
-    //         }
-    //     }
-    // }
-    public function ResetPass()
-{
-    if ($this->request->getMethod() == 'get') {
-        return view('auth/reset_pass');
-    } elseif ($this->request->getMethod() == 'post') {
-        // Fetch the token from the URL segment
-        $token = $this->request->uri->getSegment(3); // Assuming the token is in the third segment of the URL
-        
-        if (!empty($token)) {
-            // Here, you can verify the token and update the password in the database
-            // Your verification and password update code goes here
-            echo "Token: " . $token; // For testing purposes, you can just echo the token
-            exit(); // This will stop execution and display the token. Remove it once you have identified the issue.
-        } else {
-            // Token not found in the URL
-            echo "Token not provided";
-            exit(); // This will stop execution and display the error message. Remove it once you have identified the issue.
+                if ($updated) {
+                    // echo "Password updated successfully!";
+                    $message = ['status' => 'true', 'message' => "Password updated successfully!!"];
+                    return $this->response->setJSON($message);
+                } else {
+                    // echo "Failed to update password.";
+                    $message = ['status' => 'false', 'message' => "Failed to update password.!"];
+                    return $this->response->setJSON($message);
+                }
+                // print_r($data);
+            } else {
+                // No data found for the token
+                // echo "No data found for the token: $token";
+                $message = ['status' => 'false', 'message' => "No data found for the token!"];
+                return $this->response->setJSON($message);
+            }
         }
+
     }
-}
+
 
 
 

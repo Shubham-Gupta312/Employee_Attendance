@@ -167,6 +167,7 @@
                 success: function (response) {
                     // console.log(response);
                     if (response.status === 'true') {
+                        $('input').val('');
                         $('.emp_container').hide();
                         table.ajax.reload(null, false);
                     }

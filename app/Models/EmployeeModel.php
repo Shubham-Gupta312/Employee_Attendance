@@ -39,4 +39,37 @@ class EmployeeModel extends Model
         }
     }
 
+    public function getEmpIdByToken($token)
+    {
+        // Query the database to fetch the employee ID based on the token
+        $result = $this->where('emp_id', $token)->first(); // Assuming 'token' is the column name
+
+        if (!empty($result)) {
+            return $result['emp_id']; // Assuming 'emp_id' is the column name for the employee ID
+        } else {
+            return null; // Token not found
+        }
+    }
+
+    public function updatePassword($id, $data)
+    {
+        return $this->update($id, $data);
+    }
+
+    public function getDataByToken($token)
+    {
+        // Execute a query to fetch data based on the token
+        $query = $this->db->table($this->table)
+                          ->where('emp_id', $token)
+                          ->get();
+
+        // Check if any rows are returned
+        if ($query->getNumRows() > 0) {
+            // Return the fetched data
+            return $query->getRow();
+        } else {
+            // No data found for the token
+            return null;
+        }
+    }
 }

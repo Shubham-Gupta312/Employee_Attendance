@@ -49,10 +49,11 @@ class Home extends BaseController
             'emp_email ' => $email,
             'emp_phone' => $phone,
             'emp_address' => $address,
+            'password'    => '',
         ];
 
         $query = $employeeModel->insert($data);
-
+        // print_r($query);
         if (!$query) {
             $message = ['status' => 'false', 'message' => 'Something went wrong!'];
             return $this->response->setJSON($message);
