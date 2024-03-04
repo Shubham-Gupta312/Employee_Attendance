@@ -64,6 +64,11 @@
                                             placeholder="Password" name="password">
                                     </div>
                                 </div>
+                                <div class="form">
+                                    <div class="error">
+                                        <p class="error-msg"></p>
+                                    </div>
+                                </div>
                                 <div class="form-group text-center mt-4">
                                     <div class="col-xs-12">
                                         <button
@@ -155,6 +160,9 @@
                         if (response.status === 'true') {
                             // Redirect to login page
                             window.location.href = "<?= base_url('admin/dashboard') ?>";
+                        } else {
+                            var msg = response.message;
+                            $('.error-msg').text(msg).css('color', 'red');
                         }
                     },
                     error: function (xhr, status, error) {

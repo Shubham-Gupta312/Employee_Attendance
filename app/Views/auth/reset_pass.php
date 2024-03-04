@@ -53,7 +53,7 @@
                         <div class="col-12">
                             <form class="form-horizontal mt-3 form-material" id="resetForm">
                                 <div class="form-group mb-3 ">
-                                    <input type="hidden" name="value" value="<?php echo ($emp_id) ? $emp_id : ''; ?>">
+                                    <input type="hidden" name="value" value="<?php echo ($token) ? $token : ''; ?>">
                                     <div class="col-xs-12">
                                         <input class="form-control" type="password" required="" name="password"
                                             id="password" placeholder="Password">
@@ -132,20 +132,20 @@
                 // Serialize form data
                 var formData = $form.serialize();
                 // Log form data to console
-                console.log(formData);
+                // console.log(formData);
                 // Use AJAX to submit form data
                 $.ajax({
                     url: "<?= base_url('reset_pswrd') ?>",
                     type: 'POST',
                     data: formData,
                     success: function (response) {
-                        console.log(response);
-                        // if (response.status === 'true') {
-                        //     // Reset form inputs
-                        //     $('#registerForm')[0].reset();
-                        //     // Redirect to login page
-                        //     window.location.href = "<?= base_url('admin/login') ?>";
-                        // }
+                        // console.log(response);
+                        if (response.status === 'true') {
+                            window.location.href = "<?= base_url() ?>";
+                        }
+                        if(response.status == 'fail'){
+                            window.location.href = "<?= base_url('error_msg') ?>";
+                        }
                     },
                     error: function (xhr, status, error) {
                         // Handle error

@@ -99,71 +99,62 @@ class AuthController extends BaseController
             $request = \Config\Services::request();
             // Get the full URL including query parameters
             $token = $request->getGet('token');
-            // echo $token;    
+
+            // Load the EmployeeModel
             $employeeModel = new \App\Models\EmployeeModel();
-            // Fetch the employee ID based on the token from the database
-            $emp_id = $employeeModel->getEmpIdByToken($token);
 
-            // Check if employee ID is found
-            if ($emp_id) {
-                // // Debugging statement
-                // echo "Token received: " . $token . "<br>";
-                // Pass the employee ID value to the view
-                $data['emp_id'] = $emp_id;
-                // print_r($data);
-                return view('auth/reset_pass', $data);
-            } else {
-                // $message = ['status' => 'false', 'message' => "No employee ID found for the provided token."];
-                $message = ['status' => 'false', 'message' => "UnAuthoried Access."];
-                return $this->response->setJSON($message);
+            // Check if the token exists for any row in the database
+            $tokenExist = $employeeModel->tokenExists($token);
+
+            if ($tokenExist) {
+                // Token found, load the reset password view passing the token
+                return view('auth/reset_pass', ['token' => $token]);
             }
-            // POST REQUEST
         } elseif ($this->request->getMethod() == 'post') {
-            $postData = $this->request->getPost();
-
-            // Retrieve the token from the POST data
-            if (isset($postData['value'])) {
-                $token = $postData['value'];
-            } else {
-                // Handle the case where the 'value' parameter is not set in the POST data
-                // echo "Token not found in POST data.";
-                $message = ['status' => 'false', 'message' => 'UnAuthorized Token Access'];
-                return $this->response->setJSON($message);
-            }
-
-            // Get the password from the POST request
+            $value = $this->request->getPost('value');
             $password = $this->request->getPost('password');
 
+            // echo $value . '<br>' . $password;
+            // Load the EmployeeModel
             $employeeModel = new \App\Models\EmployeeModel();
-            $data = $employeeModel->getDataByToken($token);
-            if ($data) {
-                // Data found for the token
-                // echo "Update the password"
-                $updateData = ['password' => $password]; // Assuming 'password' is the column name in your database
-                $updated = $employeeModel->updatePassword($data->id, $updateData); // Assuming 'id' is the primary key column name
+            // encrypt the password
+            $encryptedPassword = PassHash::pass_enc($password);
 
-                if ($updated) {
-                    // echo "Password updated successfully!";
-                    $message = ['status' => 'true', 'message' => "Password updated successfully!!"];
-                    return $this->response->setJSON($message);
+            // Check if the token value is in the database
+            if ($employeeModel->tokenExists($value)) {
+                //  Check if the token has been used before
+                $tokenUsed = $employeeModel->isTokenUsed($value);
+
+                if (!$tokenUsed) {
+                    // Update the password for the row associated with the token
+                    $updated = $employeeModel->updatePasswordByToken($value, $encryptedPassword);
+
+                    if ($updated) {
+                        // Mark the token as used in the database
+                        $employeeModel->markTokenAsUsed($value);
+
+                        // Password updated successfully
+                        $message = ['status' => 'true', 'message' => 'Password updated successfully!'];
+                    } else {
+                        // Failed to update password
+                        $message = ['status' => 'false', 'message' => 'Failed to update password!'];
+                    }
                 } else {
-                    // echo "Failed to update password.";
-                    $message = ['status' => 'false', 'message' => "Failed to update password.!"];
-                    return $this->response->setJSON($message);
+                    // Token has already been used
+                    $message = ['status' => 'fail', 'message' => 'Token has already been used!'];
                 }
-                // print_r($data);
             } else {
-                // No data found for the token
-                // echo "No data found for the token: $token";
-                $message = ['status' => 'false', 'message' => "No data found for the token!"];
-                return $this->response->setJSON($message);
+                // Token not found in the database
+                // echo "Token not found in the database.";
+                $message = ['status' => 'true', 'message' => 'Token not found in the database.!'];
             }
+            return $this->response->setJSON($message);
         }
-
     }
 
-
-
-
+    public function error_msg()
+    {
+        return view('UpdateErrorMsg');
+    }
 
 }

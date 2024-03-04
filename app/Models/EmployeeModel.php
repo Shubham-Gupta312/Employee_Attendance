@@ -56,20 +56,84 @@ class EmployeeModel extends Model
         return $this->update($id, $data);
     }
 
-    public function getDataByToken($token)
-    {
-        // Execute a query to fetch data based on the token
-        $query = $this->db->table($this->table)
-                          ->where('emp_id', $token)
-                          ->get();
 
-        // Check if any rows are returned
-        if ($query->getNumRows() > 0) {
-            // Return the fetched data
-            return $query->getRow();
-        } else {
-            // No data found for the token
-            return null;
+    public function tokenExists($token)
+    {
+        // Check if the token exists in the database
+        $query = $this->where('token', $token)->countAllResults();
+
+        // If count is greater than 0, token exists
+        return $query > 0;
+    }
+
+    public function updatePasswordByToken($token, $password)
+    {
+        // Update the token for the employee in the database
+        try {
+            $this->db->table($this->table)
+                ->where('token', $token)
+                ->update(['password' => $password]);
+            return true;
+        } catch (\Exception $e) {
+            // Log the exception
+            // log_message('error', 'Exception in updateTimestamp: ' . $e->getMessage());
+            return false; // Return false if update fails
         }
     }
+    public function updateToken($empId, $token)
+    {
+        // Update the token for the employee in the database
+        try {
+            $this->db->table($this->table)
+                ->where('emp_id', $empId)
+                ->update(['token' => $token]);
+            return true;
+        } catch (\Exception $e) {
+            // Log the exception
+            // log_message('error', 'Exception in updateTimestamp: ' . $e->getMessage());
+            return false; // Return false if update fails
+        }
+    }
+
+    public function isTokenUsed($token)
+    {
+        // Check if the token has been used by querying the database
+        $query = $this->where('token', $token)
+            ->where('is_used', 1) // Assuming 'is_used' is a column indicating whether the token has been used
+            ->countAllResults();
+
+        // If count is greater than 0, token has been used
+        return $query > 0;
+    }
+
+    public function markTokenAsUsed($token)
+    {
+        try {
+            // Mark the token as used in the database
+            $this->db->table($this->table)
+                ->where('token', $token)
+                ->update(['is_used' => 1]); // 1 is indicationg to the column token is used
+            return true;
+        } catch (\Exception $e) {
+            // Log the exception
+            // log_message('error', 'Exception in updateTimestamp: ' . $e->getMessage());
+            return false; // Return false if update fails
+        }
+    }
+
+    public function updatePasswordByEmail($email, $password)
+    {
+        // Update the password for the employee in the database
+        try {
+            $this->db->table($this->table)
+                ->where('emp_email', $email)
+                ->update(['password' => $password]);
+            return true;
+        } catch (\Exception $e) {
+            // Log the exception
+            // log_message('error', 'Exception in updateTimestamp: ' . $e->getMessage());
+            return false; // Return false if update fails
+        }
+    }
+
 }
