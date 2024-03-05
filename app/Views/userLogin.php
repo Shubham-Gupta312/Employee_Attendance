@@ -58,7 +58,7 @@
                             </div>
                             <div class="form-button">
                                 <button id="submit" type="submit" name="submit" id="submit" class="ibtn">Login</button>
-                                <a href="<?= base_url('emp_reset_email') ?>">Reset password?</a>
+                                <a href="<?= base_url('emp_reset_email') ?>">Forgot password?</a>
                             </div>
                         </form>
                     </div>

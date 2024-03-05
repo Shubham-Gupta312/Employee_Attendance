@@ -17,6 +17,10 @@ $routes->group('admin', static function ($routes) {
 $routes->group('', ['filter' => 'IsUserLogin'], static function ($routes){
     $routes->get('/', 'Home::index');
     $routes->get('signout', 'UserController::signout');
+    $routes->post('getEmpDetails', 'UserController::getEmpDetails');
+    $routes->post('mark_attendance', 'UserController::mark_attendance');
+    $routes->get('getSessionEmail', 'UserController::getSessionEmail');
+    $routes->get('fetchEmployeeDetails', 'UserController::fetchEmployeeDetails');
 });
 
 // User Reset Password 

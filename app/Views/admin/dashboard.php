@@ -67,7 +67,7 @@
                             <th scope="col">Sl. No.</th>
                             <th scope="col">Employee-Id</th>
                             <th scope="col">Name</th>
-                            <th scope="col">Email</th>
+                            <th scope="col">Email / Username</th>
                             <th scope="col">Mobile No.</th>
                             <th scope="col">Address</th>
                             <th scope="col">Action</th>

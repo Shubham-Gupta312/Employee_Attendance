@@ -29,17 +29,24 @@ class UserController extends BaseController
                 $message = ['status' => 'false', 'message' => 'Incorrect password'];
                 return $this->response->setJSON($message);
             } else {
-                if (!is_null($userData)) {
-                    $sessionData = [
-                        'name' => $userData['emp_name'],
-                        'email' => $userData['emp_email'],
-                        'loggedin' => 'loggedin'
-                    ];
-                    session()->set($sessionData);
+                if ($userData['status'] == 1) {
+                    // User is logged in, perform action to logged in the user account
+                    if (!is_null($userData)) {
+                        $sessionData = [
+                            'name' => $userData['emp_name'],
+                            'email' => $userData['emp_email'],
+                            'loggedin' => 'loggedin'
+                        ];
+                        session()->set($sessionData);
+                    }
+                    // Authentication successful
+                    $message = ['status' => 'true', 'message' => 'Logged in successfully'];
+                    return $this->response->setJSON($message);
+                } else {
+                    // User is not authorized, show a message
+                    $message = ['status' => 'false', 'message' => 'You are not authorized to log in.'];
+                    return $this->response->setJSON($message);
                 }
-                // Authentication successful
-                $message = ['status' => 'true', 'message' => 'Logged in successfully'];
-                return $this->response->setJSON($message);
             }
         }
     }
@@ -104,4 +111,142 @@ class UserController extends BaseController
 
         }
     }
+
+    public function getEmpDetails()
+    {
+        $email = $this->request->getPost('email');
+        // Load the EmployeeModel
+        $employeeModel = new \App\Models\EmployeeModel();
+
+        // Call the method to retrieve employee details by email
+        $employeeDetails = $employeeModel->getEmployeeDetailsByEmail($email);
+
+        if ($employeeDetails !== null) {
+            $message = ['status' => 'true', 'message' => $employeeDetails];
+        } else {
+            $message = ['status' => 'false', 'message' => 'Employee details not found'];
+        }
+
+        // Return the details as JSON
+        return $this->response->setJSON($message);
+    }
+
+    public function mark_attendance()
+    {
+        $id = $this->request->getPost('id');
+        $name = $this->request->getPost('name');
+        $email = $this->request->getPost('email');
+        $phone = $this->request->getPost('phone');
+        $date = $this->request->getPost('date');
+        $time = $this->request->getPost('time');
+        $city = $this->request->getPost('address');
+        $latitude = $this->request->getPost('latitude');
+        $longitude = $this->request->getPost('longitude');
+
+        $data = [
+            'emp_id' => $id,
+            'emp_name' => $name,
+            'emp_email' => $email,
+            'emp_phone' => $phone,
+            'date' => $date,
+            'time' => $time,
+            'latitude' => $latitude,
+            'longitude' => $longitude,
+            'city' => $city
+        ];
+
+        $emp_attendance = new \App\Models\UserModel();
+        $mark_attendance = $emp_attendance->insert($data);
+        // Insert data into the database
+        if ($mark_attendance) {
+            $message = ['status' => 'success', 'message' => 'Attendance marked successfully'];
+        } else {
+            $message = ['status' => 'error', 'message' => 'Failed to mark attendance'];
+        }
+
+        // Return the response as JSON
+        return $this->response->setJSON($message);
+    }
+
+    public function getSessionEmail()
+    {
+        $sessionEmail = session()->get('email');
+        return $this->response->setJSON(['email' => $sessionEmail]);
+    }
+
+
+    public function fetchEmployeeDetails()
+    {
+        try {
+            $fetchData = new \App\Models\UserModel();
+
+            $draw = $_GET['draw'];
+            $start = $_GET['start'];
+            $length = $_GET['length'];
+            // $searchValue = $_GET['search']['value'];
+
+            // Retrieve email from session
+            $sessionEmail = session()->get('email');
+
+            // data order in descending order
+            $fetchData->orderBy('id', 'DESC');
+
+            // // Apply search filter logic
+            // if (!empty($searchValue)) {
+            //     $fetchData->groupStart();
+            //     $fetchData->like('date', $searchValue);
+            //     $fetchData->orLike('city', $searchValue);
+            //     $fetchData->orLike('emp_email', $searchValue);
+            //     $fetchData->groupEnd();
+            // }
+
+            // Apply filter to fetch data for the logged-in user only
+            $fetchData->where('emp_email', $sessionEmail);
+            // Fetch Employee Data
+            $data['details'] = $fetchData->findAll($length, $start);
+            $totalRecords = $fetchData->countAll();
+            $associativeArray = [];
+
+            foreach ($data['details'] as $row) {
+
+                $associativeArray[] = array(
+                    0 => $row['id'],
+                    1 => $row['emp_id'],
+                    2 => $row['emp_name'],
+                    3 => $row['emp_phone'],
+                    4 => $row['emp_email'],
+                    5 => $row['date'],
+                    6 => $row['time'],
+                    7 => $row['latitude'],
+                    8 => $row['longitude'],
+                    9 => $row['city'],
+                );
+            }
+
+            if (empty($data['details'])) {
+                $output = array(
+                    "draw" => intval($draw),
+                    "recordsTotal" => 0,
+                    "recordsFiltered" => 0,
+                    "data" => [],
+                );
+            } else {
+                $output = array(
+                    "draw" => intval($draw),
+                    "recordsTotal" => $totalRecords,
+                    "recordsFiltered" => $totalRecords,
+                    "data" => $associativeArray,
+                );
+            }
+
+            return $this->response->setJSON($output);
+        } catch (\Exception $e) {
+            // Log the caught exception
+            log_message('error', 'Error in fetch_product: ' . $e->getMessage());
+
+            return $this->response->setJSON(['error' => 'Internal Server Error']);
+        }
+    }
+
+
 }

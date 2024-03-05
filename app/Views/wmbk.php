@@ -169,7 +169,7 @@
                       <th scope="col">Today's Attendance </th>
                       <th scope="col">Longitude </th>
                       <th scope="col">Latitude </th>
-                      <th scope="col">Address</th>
+                      <th scope="col">Location </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -205,40 +205,34 @@
         e.preventDefault();
         var emp_email = $('input[name="email"]').val();
 
-        // Check if attendance is already marked
-        if ($(this).prop('disabled')) {
-          alert("Attendance is already marked!");
-          return;
-        }
-
-        // Check if the current time is between 10 am to 5 pm
-        var currentDate = new Date();
-        var currentHour = currentDate.getHours();
-        if (currentHour < 10 || currentHour >= 17) {
-          alert("Attendance can only be marked between 10 am to 5 pm.");
-          return;
-        }
+        //  Button will enable will between 10AM to 5PM
+        // var currentTime = new Date();
+        // var hours = currentTime.getHours();
+        // console.log(hours);
+        // if (hours >= 10 && hours <= 17){
+        //   $('#checkin').prop('enable')
+        // }
 
         // Attempt to get the device's current position using GPS
         navigator.geolocation.getCurrentPosition(
           function (position) {
             var latitude = position.coords.latitude;
             var longitude = position.coords.longitude;
-            // console.log(latitude, longitude);
+
+            console.log('Latitude:', latitude);
+            console.log('Longitude:', longitude);
+
             // Fetch address using reverse geocoding
             getAddress(latitude, longitude);
           },
           function (error) {
-            // console.error('Error getting location:', error);
-            alert('Turn On your Location, Otherwise you are not able to mark attendance');
-            window.location.reload();
+            console.error('Error getting location:', error);
           },
           {
             enableHighAccuracy: true, // Request high accuracy
             maximumAge: 0 // Disable caching of location data
           }
         );
-
         var key = "AIzaSyCeKl2Z36bDY3VKCzF2s50uK6WJcDIWdE0";
         function getAddress(latitude, longitude) {
           fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${key}`)
@@ -246,72 +240,100 @@
             .then(data => {
               if (data.status === 'OK') {
                 var address = data.results[0].formatted_address;
-                // console.log('Address:', address);
-
-                // Get Employee Details
-                $.ajax({
-                  url: "<?= base_url('getEmpDetails') ?>",
-                  method: 'POST',
-                  data: {
-                    'email': emp_email
-                  },
-                  success: function (response) {
-                    var email_data = response.message.emp_email;
-                    var id_data = response.message.emp_id;
-                    var name_data = response.message.emp_name;
-                    var phone_data = response.message.emp_phone;
-                    var currentDate = new Date();
-                    var date = currentDate.toLocaleDateString();
-                    var time = currentDate.toLocaleTimeString();
-                    // console.log(email_data, id_data, name_data, phone_data, date, time);
-                    // Make the third AJAX request inside this success callback
-                    $.ajax({
-                      url: "<?= base_url('mark_attendance') ?>",
-                      method: 'POST',
-                      data: {
-                        'id': id_data,
-                        'name': name_data,
-                        'email': email_data,
-                        'phone': phone_data,
-                        'date': date,
-                        'time': time,
-                        'address': address,
-                        'longitude': longitude,
-                        'latitude': latitude
-                      },
-                      success: function (response) {
-                        // console.log(response);
-                        if (response.status == 'success') {
-                          table.ajax.reload(null, false);
-                          alert("Today's Attendance marked!");
-                          // Disable the button after marking attendance
-                          $('#checkin').prop('disabled', true);
-
-                        }
-                      },
-                      error: function (xhr, status, error) {
-                        // console.error('Error marking attendance:', error);
-                        alert('Something went wrong!');
-                      }
-                    });
-                  },
-                  error: function (xhr, status, error) {
-                    // console.error('Error fetching employee details:', error);
-                    alert('Something went wrong!');
-                  }
-                });
+                console.log('Address:', address);
               } else {
-                // console.error('Error: Unable to find address');
-                alert('Unable to find address!');
+                console.error('Error: Unable to find address');
               }
             })
             .catch(error => {
-              // console.error('Error fetching address:', error);
-              alert('Unable to find address!');
+              console.error('Error fetching address:', error);
             });
         }
-      });
-    });
+
+
+        $.ajax({
+          url: "<?= base_url('getEmpDetails') ?>",
+          method: 'POST',
+          data: {
+            'email': emp_email
+          },
+          success: function (response) {
+            var email_data = response.message.emp_email;
+            var id_data = response.message.emp_id;
+            var name_data = response.message.emp_name;
+            var phone_data = response.message.emp_phone;
+
+            // Check if Geolocation is supported by the browser
+            // Attempt to get the device's current position using GPS
+            navigator.geolocation.getCurrentPosition(
+              function (position) {
+                var latitude = position.coords.latitude;
+                var longitude = position.coords.longitude;
+                var currentDate = new Date();
+                var date = currentDate.toLocaleDateString();
+                var time = currentDate.toLocaleTimeString();
+                console.log('Latitude:', latitude);
+                console.log('Longitude:', longitude);
+
+                // Fetch address using reverse geocoding
+                getAddress(latitude, longitude);
+              },
+              function (error) {
+                console.error('Error getting location:', error);
+              },
+              {
+                enableHighAccuracy: true, // Request high accuracy
+                maximumAge: 0 // Disable caching of location data
+              }
+            );
+            // $.ajax({
+            //   url: 'https://ipapi.co/json',
+            //   method: 'GET',
+            //   success: function (data) {
+            //     var currentDate = new Date();
+            //     var date = currentDate.toLocaleDateString();
+            //     var time = currentDate.toLocaleTimeString();
+            //     var city = data.city;
+            //     var latitude = data.latitude;
+            //     var longitude = data.longitude;
+
+            // Make the third AJAX request inside this success callback
+            $.ajax({
+              url: "<?= base_url('mark_attendance') ?>",
+              method: 'POST',
+              data: {
+                'id': id_data,
+                'name': name_data,
+                'email': email_data,
+                'phone': phone_data,
+                'date': date,
+                'time': time,
+                'city': city,
+                'longitude': longitude,
+                'latitude': latitude
+              },
+              success: function (response) {
+                // console.log(response);
+                if (response.status == 'success') {
+                  table.ajax.reload(null, false);
+                }
+              },
+              error: function (xhr, status, error) {
+                console.error('Error marking attendance:', error);
+              }
+            });
+          },
+          error: function (xhr, status, error) {
+            console.error('Error fetching location details:', error);
+          }
+        });
+      },
+        error: function (xhr, status, error) {
+          console.error('Error fetching employee details:', error);
+        }
+        });
+    // });
+    // });
 
     // Get session email data
     $.ajax({
