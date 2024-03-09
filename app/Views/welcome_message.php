@@ -255,7 +255,7 @@
           }
         );
 
-        var key = "AIzaSyCeKl2Z36bDY3VKCzF2s50uK6WJcDIWdE0";
+        var key = "";
         function getAddress(latitude, longitude) {
           fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${key}`)
             .then(response => response.json())
