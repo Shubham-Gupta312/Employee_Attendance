@@ -51,6 +51,17 @@
                                         maxlength="10" placeholder="Enter Employee Phone No.">
                                 </div>
                                 <div class="col-lg-6 col-md-6">
+                                    <label for="phone">Longitude</label><span class="text-danger">*</span>
+                                    <input type="text" class="form-control onlynumbers" id="longitude" name="longitude" placeholder="Enter Longitude">
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-lg-6 col-md-6">
+                                    <label for="address">Latitude</label><span class="text-danger">*</span>
+                                    <input class="form-control onlynumbers" placeholder="Enter Latitude"
+                                        name="latitude" id="latitude">
+                                </div>
+                                <div class="col-lg-6 col-md-6">
                                     <label for="address">Employee Address</label><span class="text-danger">*</span>
                                     <textarea class="form-control specialChars" placeholder="Enter Employee Address"
                                         name="address" id="address" rows="1"></textarea>
@@ -96,7 +107,6 @@
 </div>
 
 <!-- jquery Validation Plugin -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/js/bootstrapValidator.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/js/bootstrapValidator.min.js"></script>
 <!-- DataTables CSS -->
@@ -143,6 +153,20 @@
                             min: 10,
                             max: 10,
                             message: 'Phone number must be exactly 10 digits'
+                        }
+                    }
+                },
+                'longitude': {
+                    validators: {
+                        notEmpty: {
+                            message: "Please enter Longitude."
+                        }
+                    }
+                },
+                'latitude': {
+                    validators: {
+                        notEmpty: {
+                            message: "Please enter Latitude."
                         }
                     }
                 },
@@ -203,11 +227,11 @@
             method: "POST",
             url: "<?= base_url('admin/reset_password') ?>",
             data: {
-                'id' : id,
+                'id': id,
             },
             success: function (response) {
                 // console.log(response);
-                if(response.status == 'true'){
+                if (response.status == 'true') {
                     $('#sendEmail').hide();
                     alert('Email sent Successfully to the registered Email-Id');
                 }
@@ -218,7 +242,7 @@
     // only number allowed
     $(document).ready(function () {
         $('body').on('keyup', ".onlynumbers", function (event) {
-            this.value = this.value.replace(/[^[0-9]]*/gi, '');
+            this.value = this.value.replace(/[^[0-9.]]*/gi, '');
         });
 
         //  only alphabet, numeric & some special

@@ -171,7 +171,20 @@ class UserController extends BaseController
     public function getSessionEmail()
     {
         $sessionEmail = session()->get('email');
-        return $this->response->setJSON(['email' => $sessionEmail]);
+        $location = new \App\Models\EmployeeModel();
+        $latLong = $location->getLatLongByEmail($sessionEmail);
+        // return $this->response->setJSON(['email' => $sessionEmail]);
+        if ($latLong) {
+            // If latLong is not null, prepare the response with email, latitude, and longitude
+            return $this->response->setJSON([
+                'email' => $sessionEmail,
+                'latitude' => $latLong['latitude'],
+                'longitude' => $latLong['longitude']
+            ]);
+        } else {
+            // If latLong is null, return only the email
+            return $this->response->setJSON(['email' => $sessionEmail]);
+        }
     }
 
 

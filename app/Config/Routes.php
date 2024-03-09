@@ -45,5 +45,6 @@ $routes->group('admin', ['filter' => 'IsAdminLogin'], static function ($routes){
     $routes->get('fetch_employee', 'Home::fetch_employee');
     $routes->post('setStatus', 'Home::setStatus');
     $routes->get('reports', 'Home::reports');
+    $routes->get('fetchreports', 'Home::fetchReports');
     $routes->post('reset_password', 'Home::resetPasswordMail');
 });

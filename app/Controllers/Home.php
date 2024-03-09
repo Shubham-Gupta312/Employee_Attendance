@@ -18,6 +18,8 @@ class Home extends BaseController
         $email = $this->request->getPost('email');
         $phone = $this->request->getPost('phone');
         $address = $this->request->getPost('address');
+        $longitude = $this->request->getPost('longitude');
+        $latitude = $this->request->getPost('latitude');
 
         // Slice the first two letters of the name and convert them to uppercase
         $EmpInitials = strtoupper(substr($name, 0, 2));
@@ -49,6 +51,8 @@ class Home extends BaseController
             'emp_email ' => $email,
             'emp_phone' => $phone,
             'emp_address' => $address,
+            'longitude'  => $longitude,
+            'latitude'   => $latitude,
             'password' => '',
         ];
 
@@ -220,13 +224,79 @@ class Home extends BaseController
         }
     }
 
-
-
-
-
-
     public function reports()
     {
         return view('admin/reports');
     }
+
+    public function fetchReports()
+    {
+        try {
+            $fetchData = new \App\Models\UserModel();
+
+            $draw = $_GET['draw'];
+            $start = $_GET['start'];
+            $length = $_GET['length'];
+            $searchValue = $_GET['search']['value'];
+
+            // data order in descending order
+            $fetchData->orderBy('id', 'DESC');
+
+            // Apply search filter logic
+            if (!empty($searchValue)) {
+                $fetchData->groupStart();
+                $fetchData->like('emp_id', $searchValue);
+                $fetchData->orLike('emp_name', $searchValue);
+                $fetchData->orLike('emp_email', $searchValue);
+                $fetchData->orLike('date', $searchValue);
+                $fetchData->groupEnd();
+            }
+
+             // Fetch Employee Data
+            $data['details'] = $fetchData->findAll($length, $start);
+            $totalRecords = $fetchData->countAll();
+            $associativeArray = [];
+
+            foreach ($data['details'] as $row) {
+
+                $associativeArray[] = array(
+                    0 => $row['id'],
+                    1 => $row['emp_id'],
+                    2 => $row['emp_name'],
+                    3 => $row['emp_phone'],
+                    4 => $row['emp_email'],
+                    5 => $row['date'],
+                    6 => $row['time'],
+                    7 => $row['latitude'],
+                    8 => $row['longitude'],
+                    9 => $row['city'],
+                );
+            }
+
+            if (empty($data['details'])) {
+                $output = array(
+                    "draw" => intval($draw),
+                    "recordsTotal" => 0,
+                    "recordsFiltered" => 0,
+                    "data" => [],
+                );
+            } else {
+                $output = array(
+                    "draw" => intval($draw),
+                    "recordsTotal" => $totalRecords,
+                    "recordsFiltered" => $totalRecords,
+                    "data" => $associativeArray,
+                );
+            }
+
+            return $this->response->setJSON($output);
+        } catch (\Exception $e) {
+            // Log the caught exception
+            log_message('error', 'Error in fetch_product: ' . $e->getMessage());
+
+            return $this->response->setJSON(['error' => 'Internal Server Error']);
+        }
+    }
+
+    
 }

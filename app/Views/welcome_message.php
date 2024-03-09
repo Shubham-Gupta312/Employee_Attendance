@@ -69,6 +69,10 @@
     .form-body {
       background-color: #064E89;
     }
+
+    #EmpDetails_filter {
+      display: none;
+    }
   </style>
 </head>
 
@@ -155,7 +159,19 @@
 
               </form>
 
-
+              <div class="conatiner d-flex" style="gap: 15px;">
+                <span><strong>Co-ordinates: </strong></span>
+                <div class="coordinates">
+                  <div class="longitude">
+                    <span>Longitude: <strong id="longitude"></strong></span>
+                  </div>
+                </div>
+                <div class="coordinates">
+                  <div class="latitude">
+                    <span>Latitude: <strong id="latitude"></strong></span>
+                  </div>
+                </div>
+              </div>
               <div class="table-responsive">
                 <table class="table table-striped" id="EmpDetails">
                   <thead>
@@ -319,7 +335,11 @@
       method: 'GET',
       success: function (response) {
         // var sessionEmail = response.email;
-        // console.log("session email-> ", sessionEmail);
+        // console.log(response);
+        var lat = response.latitude;
+        var long = response.longitude;
+        $('#latitude').text(lat);
+        $('#longitude').text(long);
       },
       error: function (xhr, status, error) {
         // console.error('Error fetching session email:', error);

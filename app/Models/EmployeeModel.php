@@ -144,4 +144,8 @@ class EmployeeModel extends Model
             ->first();
     }
 
+    public function getLatLongByEmail($email)
+    {
+        return $this->where('emp_email', $email)->first(); // Assuming you want to fetch the first matching record
+    }
 }
