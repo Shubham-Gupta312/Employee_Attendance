@@ -58,8 +58,23 @@
             color: #a94442;
             /* Red color for error messages */
         }
-        li a{
+
+        li a {
             text-decoration: none;
+        }
+
+        @media (min-width: 992px) {
+            .col-lg-3 {
+                flex: 0 0 auto;
+                width: 100%;
+            }
+        }
+
+        @media (min-width: 992px) {
+            .col-lg-3 {
+                flex: 0 0 25%;
+                max-width: 100%;
+            }
         }
 
         #EmpTable_wrapper {

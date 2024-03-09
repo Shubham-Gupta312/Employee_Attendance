@@ -70,6 +70,10 @@
       background-color: #064E89;
     }
 
+    .conatiner.d-flex {
+      justify-content: center;
+    }
+
     #EmpDetails_filter {
       display: none;
     }
@@ -177,7 +181,7 @@
                   <thead>
                     <tr>
                       <th scope="col">Sl.No </th>
-                      <th scope="col">Employee Id </th>
+                      <th scope="col">ID </th>
                       <th scope="col">Name </th>
                       <th scope="col">Mobile Number </th>
                       <th scope="col">Email Id </th>
