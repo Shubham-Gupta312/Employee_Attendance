@@ -139,7 +139,7 @@ class EmployeeModel extends Model
     // Method to retrieve employee details by email
     public function getEmployeeDetailsByEmail($email)
     {
-        return $this->select('emp_id, emp_name, emp_email, emp_phone')
+        return $this->select('emp_id, kgid, emp_name, emp_email, emp_phone')
             ->where('emp_email', $email)
             ->first();
     }

@@ -17,6 +17,7 @@ class Home extends BaseController
     }
     public function add_employee()
     {
+        $kgid = $this->request->getPost('kgid');
         $name = $this->request->getPost('name');
         $email = $this->request->getPost('email');
         $phone = $this->request->getPost('phone');
@@ -49,6 +50,7 @@ class Home extends BaseController
 
         // Save the new employee details to the database
         $data = [
+            'kgid' => $kgid,
             'emp_id' => $employeeId,
             'emp_name' => $name,
             'emp_email ' => $email,
@@ -109,7 +111,7 @@ class Home extends BaseController
                 }
                 $associativeArray[] = array(
                     0 => $row['id'],
-                    1 => $row['emp_id'],
+                    1 => $row['kgid'],
                     2 => $row['emp_name'],
                     3 => $row['emp_email'],
                     4 => $row['emp_phone'],
@@ -264,7 +266,7 @@ class Home extends BaseController
 
                 $associativeArray[] = array(
                     0 => $row['id'],
-                    1 => $row['emp_id'],
+                    1 => $row['kgid'],
                     2 => $row['emp_name'],
                     3 => $row['emp_phone'],
                     4 => $row['emp_email'],

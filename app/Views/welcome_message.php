@@ -181,15 +181,15 @@
                   <thead>
                     <tr>
                       <th scope="col">Sl.No </th>
-                      <th scope="col">ID </th>
+                      <th scope="col">KGID </th>
                       <th scope="col">Name </th>
-                      <th scope="col">Mobile Number </th>
-                      <th scope="col">Email Id </th>
+                      <!-- <th scope="col">Mobile Number </th>
+                      <th scope="col">Email Id </th> -->
                       <th scope="col">Date </th>
                       <th scope="col">Today's Attendance </th>
-                      <th scope="col">Longitude </th>
+                      <!-- <th scope="col">Longitude </th>
                       <th scope="col">Latitude </th>
-                      <th scope="col">Address</th>
+                      <th scope="col">Address</th> -->
                     </tr>
                   </thead>
                   <tbody>
@@ -259,7 +259,7 @@
           }
         );
 
-        var key = "";
+        var key = "AIzaSyCeKl2Z36bDY3VKCzF2s50uK6WJcDIWdE0";
         function getAddress(latitude, longitude) {
           fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${key}`)
             .then(response => response.json())
@@ -276,8 +276,10 @@
                     'email': emp_email
                   },
                   success: function (response) {
+                    // console.log(response);
                     var email_data = response.message.emp_email;
                     var id_data = response.message.emp_id;
+                    var kgid = response.message.kgid;
                     var name_data = response.message.emp_name;
                     var phone_data = response.message.emp_phone;
                     var currentDate = new Date();
@@ -290,6 +292,7 @@
                       method: 'POST',
                       data: {
                         'id': id_data,
+                        'kgid': kgid,
                         'name': name_data,
                         'email': email_data,
                         'phone': phone_data,

@@ -134,6 +134,7 @@ class UserController extends BaseController
     public function mark_attendance()
     {
         $id = $this->request->getPost('id');
+        $kgid = $this->request->getPost('kgid');
         $name = $this->request->getPost('name');
         $email = $this->request->getPost('email');
         $phone = $this->request->getPost('phone');
@@ -145,6 +146,7 @@ class UserController extends BaseController
 
         $data = [
             'emp_id' => $id,
+            'kgid' => $kgid,
             'emp_name' => $name,
             'emp_email' => $email,
             'emp_phone' => $phone,
@@ -222,17 +224,24 @@ class UserController extends BaseController
 
             foreach ($data['details'] as $row) {
 
+                // $associativeArray[] = array(
+                //     0 => $row['id'],
+                //     1 => $row['emp_id'],
+                //     2 => $row['emp_name'],
+                //     3 => $row['emp_phone'],
+                //     4 => $row['emp_email'],
+                //     5 => $row['date'],
+                //     6 => $row['time'],
+                //     7 => $row['latitude'],
+                //     8 => $row['longitude'],
+                //     9 => $row['city'],
+                // );
                 $associativeArray[] = array(
                     0 => $row['id'],
-                    1 => $row['emp_id'],
+                    1 => $row['kgid'],
                     2 => $row['emp_name'],
-                    3 => $row['emp_phone'],
-                    4 => $row['emp_email'],
-                    5 => $row['date'],
-                    6 => $row['time'],
-                    7 => $row['latitude'],
-                    8 => $row['longitude'],
-                    9 => $row['city'],
+                    3 => $row['date'],
+                    4 => $row['time'],
                 );
             }
 

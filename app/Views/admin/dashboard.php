@@ -34,33 +34,41 @@
                         <form id="addEmployee">
                             <div class="row">
                                 <div class="col-lg-6 col-md-6">
+                                    <label for="name">Employee KGID</label><span class="text-danger">*</span>
+                                    <input type="text" class="form-control specialChars" id="kgid" name="kgid"
+                                        placeholder="Enter Employee KGID">
+                                </div>
+                                <div class="col-lg-6 col-md-6">
                                     <label for="name">Employee Name</label><span class="text-danger">*</span>
                                     <input type="text" class="form-control specialChars" id="name" name="name"
                                         placeholder="Enter Employee Name">
                                 </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-lg-6 col-md-6">
                                     <label for="email">Employee Email</label><span class="text-danger">*</span>
                                     <input type="email" class="form-control" name="email" id="email"
                                         placeholder="Enter Employee Email-Id">
                                 </div>
-                            </div>
-                            <div class="row mt-2">
                                 <div class="col-lg-6 col-md-6">
                                     <label for="phone">Employee Phone No.</label><span class="text-danger">*</span>
                                     <input type="tel" class="form-control onlynumbers" id="phone" name="phone"
                                         maxlength="10" placeholder="Enter Employee Phone No.">
                                 </div>
-                                <div class="col-lg-6 col-md-6">
-                                    <label for="phone">Longitude</label><span class="text-danger">*</span>
-                                    <input type="text" class="form-control onlynumbers" id="longitude" name="longitude" placeholder="Enter Longitude">
-                                </div>
                             </div>
                             <div class="row mt-2">
                                 <div class="col-lg-6 col-md-6">
-                                    <label for="address">Latitude</label><span class="text-danger">*</span>
-                                    <input class="form-control onlynumbers" placeholder="Enter Latitude"
-                                        name="latitude" id="latitude">
+                                    <label for="phone">Longitude</label><span class="text-danger">*</span>
+                                    <input type="text" class="form-control onlynumbers" id="longitude" name="longitude"
+                                        placeholder="Enter Longitude">
                                 </div>
+                                <div class="col-lg-6 col-md-6">
+                                    <label for="address">Latitude</label><span class="text-danger">*</span>
+                                    <input class="form-control onlynumbers" placeholder="Enter Latitude" name="latitude"
+                                        id="latitude">
+                                </div>
+                            </div>
+                            <div class="row mt-2">
                                 <div class="col-lg-6 col-md-6">
                                     <label for="address">Employee Address</label><span class="text-danger">*</span>
                                     <textarea class="form-control specialChars" placeholder="Enter Employee Address"
@@ -76,7 +84,7 @@
                     <thead>
                         <tr>
                             <th scope="col">Sl. No.</th>
-                            <th scope="col">Employee-Id</th>
+                            <th scope="col">KGID</th>
                             <th scope="col">Name</th>
                             <th scope="col">Email / Username</th>
                             <th scope="col">Mobile No.</th>
@@ -118,6 +126,13 @@
     jQuery(document).ready(function ($) {
         $('#addEmployee').bootstrapValidator({
             fields: {
+                'kgid': {
+                    validators: {
+                        notEmpty: {
+                            message: "Please Enter KGID"
+                        },
+                    }
+                },
                 'name': {
                     validators: {
                         notEmpty: {
