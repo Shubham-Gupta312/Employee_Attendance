@@ -9,11 +9,11 @@
                     <!-- ============================================================== -->
                     <!-- Logo -->
                     <!-- ============================================================== -->
-                    <a class="navbar-brand" href="index.html">
+                    <!-- <a class="navbar-brand" href="index.html"> -->
                         <span>
                             <h3 style="color:#fff;">Marks Attendance</h3>
                         </span>
-                    </a>
+                    <!-- </a> -->
                     <!-- ============================================================== -->
                     <!-- End Logo -->
                     <!-- ============================================================== -->
@@ -32,7 +32,10 @@
                     <!-- ============================================================== -->
                     <!-- toggle and nav items -->
                     <!-- ============================================================== -->
-                    <ul class="navbar-nav mr-auto float-left"></ul>
+                    <ul class="navbar-nav mr-auto float-left">
+                    <!-- <li class="nav-item"> <a class="nav-link sidebartoggler d-none d-md-block waves-effect waves-dark" href="javascript:void(0)"><i class="ti-menu"></i></a> </li> -->
+                    </ul>
+                    
                     <!-- ============================================================== -->
                     <!-- Right side toggle and nav items -->
                     <!-- ============================================================== -->

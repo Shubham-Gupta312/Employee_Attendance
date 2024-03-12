@@ -148,4 +148,9 @@ class EmployeeModel extends Model
     {
         return $this->where('emp_email', $email)->first(); // Assuming you want to fetch the first matching record
     }
+    public function getlatLongData() {
+        // Example query, modify as needed
+        return $this->db->query('SELECT emp_id, latitude, longitude FROM emp_data')->getResultArray();
+    }
+
 }

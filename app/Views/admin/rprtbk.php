@@ -120,57 +120,28 @@
             }
         });
 
-        // Function to handle download button click
-        $('#downloadExcelBtn').click(function (e) {
-            // Implement your download functionality here
-            e.preventDefault();
-            // console.log('Export File action performing');
-            var selectedOption = $('#actionDropdown').val();
-            if (!selectedOption) {
-                alert('Please select a value to download reports.');
-            } else {
-                // console.log('Export File action performing on this:', selectedOption, 'data');
-                // Check for additional conditions based on the selected option
-                if (selectedOption === 'name') {
-                    var formData = $('#EmployeeFilter').serialize();
-                    // console.log(formData);
-                    $.ajax({
-                        method: "POST",
-                        url: '<?= base_url("admin/NdlExcel") ?>', // Corrected syntax
-                        data: formData,
-                        success: function (response) {
-                            // console.log(response);
-                            if (response.status == 'error'){
-                                var msg =response.message;
-                                alert(msg);
-                            }
-                            if(response.status == "success"){
-                                alert('File Download Successfully!!');
-                            }
-                        }
-                    });
-                } else if (selectedOption === 'all') {
-                    var formData = $('#ALlEmployeeFilter').serialize();
-                    // console.log(formData);
-                    $.ajax({
-                        method: "POST",
-                        url: '<?= base_url("admin/ExcelReport") ?>', // Corrected syntax
-                        data: formData,
-                        success: function (response) {
-                            // console.log(response);
-                            if (response.status == 'error'){
-                                var msg =response.message;
-                                alert(msg);
-                            }
-                            if(response.status == "success"){
-                                alert('File Download Successfully!!');
-                            }
-                        }
-                    });
-                }
+        var selectedOption = $('#actionDropdown').val();
+        if (!selectedOption) {
+            alert('Please select a value to download reports.');
+        } else {
+            console.log('Export File action performing on this:', selectedOption, 'data');
+            // Check for additional conditions based on the selected option
+            if (selectedOption === 'name') {
+                var formData = $('#EmployeeFilter').serialize();
+                $.ajax({
+                    method: "POST",
+                    url: "<?= base_url('admin/NdlExcel'); ?>",
+                    data: formData,
+                    success: function (response) {
+                        console.log(response);
+                    }
+                });
+            } else if (selectedOption === 'all') {
+                var formData = $('#ALlEmployeeFilter').serialize();
+                console.log(formData);
             }
-
-        });
+        }
+    // });
     });
 
 </script>

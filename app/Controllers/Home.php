@@ -2,6 +2,9 @@
 
 namespace App\Controllers;
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 class Home extends BaseController
 {
     public function index(): string
@@ -51,8 +54,8 @@ class Home extends BaseController
             'emp_email ' => $email,
             'emp_phone' => $phone,
             'emp_address' => $address,
-            'longitude'  => $longitude,
-            'latitude'   => $latitude,
+            'longitude' => $longitude,
+            'latitude' => $latitude,
             'password' => '',
         ];
 
@@ -252,7 +255,7 @@ class Home extends BaseController
                 $fetchData->groupEnd();
             }
 
-             // Fetch Employee Data
+            // Fetch Employee Data
             $data['details'] = $fetchData->findAll($length, $start);
             $totalRecords = $fetchData->countAll();
             $associativeArray = [];
@@ -298,5 +301,193 @@ class Home extends BaseController
         }
     }
 
-    
+
+    public function DownloadExcelNameWise()
+    {
+        $name = $this->request->getPost('name');
+        $fromDate = $this->request->getPost('fromDate');
+        $toDate = $this->request->getPost('toDate');
+
+        // Check if inputs are empty
+        if (empty($name) || empty($fromDate) || empty($toDate)) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => "Please Fill the details to download the report.",
+            ]);
+        }
+
+        $empModel = new \App\Models\UserModel();
+        $offcModel = new \App\Models\EmployeeModel();
+        $spreadsheet = new Spreadsheet();
+
+        // Fetch data based on filters
+        $result = $empModel->getAttendanceByNameAndDate($name, $fromDate, $toDate);
+        $latLangResult = $offcModel->getlatLongData();
+
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Set column headers
+        $sheet->setCellValue("A1", "ID");
+        $sheet->setCellValue("B1", "Employee Name");
+        $sheet->setCellValue("C1", "Employee Email");
+        $sheet->setCellValue("D1", "Employee Phone Number");
+        $sheet->setCellValue("E1", "Date");
+        $sheet->setCellValue("F1", "Time");
+        $sheet->setCellValue("G1", "Employee Latitude");
+        $sheet->setCellValue("H1", "Employee Longitude");
+        $sheet->setCellValue("I1", "Office Latitude");
+        $sheet->setCellValue("J1", "Office Longitude");
+        $sheet->setCellValue("K1", "Employee Address");
+
+        // Set width for each column 
+        $sheet->getColumnDimension('A')->setWidth(15);
+        $sheet->getColumnDimension('B')->setWidth(20);
+        $sheet->getColumnDimension('C')->setWidth(30);
+        $sheet->getColumnDimension('D')->setWidth(20);
+        $sheet->getColumnDimension('E')->setWidth(15);
+        $sheet->getColumnDimension('F')->setWidth(15);
+        $sheet->getColumnDimension('G')->setWidth(15);
+        $sheet->getColumnDimension('H')->setWidth(15);
+        $sheet->getColumnDimension('I')->setWidth(15);
+        $sheet->getColumnDimension('J')->setWidth(15);
+        $sheet->getColumnDimension('K')->setWidth(30);
+
+        $count = 2;
+        foreach ($result as $index => $row) {
+            $sheet->setCellValue("A" . $count, $row['emp_id']);
+            $sheet->setCellValue("B" . $count, $row['emp_name']);
+            $sheet->setCellValue("C" . $count, $row['emp_email']);
+            $sheet->setCellValue("D" . $count, $row['emp_phone']);
+            $sheet->setCellValue("E" . $count, $row['date']);
+            $sheet->setCellValue("F" . $count, $row['time']);
+            $sheet->setCellValue("G" . $count, $row['latitude']);
+            $sheet->setCellValue("H" . $count, $row['longitude']);
+            $sheet->setCellValue("K" . $count, $row['city']);
+
+            // Find the corresponding office latitude and longitude
+            $officeLat = '';
+            $officeLong = '';
+            foreach ($latLangResult as $office) {
+                if ($office['emp_id'] == $row['emp_id']) {
+                    $officeLat = $office['latitude'];
+                    $officeLong = $office['longitude'];
+                    break;
+                }
+            }
+
+            // Populate office latitude and longitude
+            $sheet->setCellValue("I" . $count, $officeLat);
+            $sheet->setCellValue("J" . $count, $officeLong);
+
+            $count++;
+        }
+        // Generate timestamp
+        $timestamp = date('Ymd_His');
+
+        // Define the filename with timestamp
+        $filename = "Employee-Data_" . $timestamp . ".xlsx";
+
+        // Save the spreadsheet with the filename including the timestamp
+        $writer = new Xlsx($spreadsheet);
+        $writer->save($filename);
+        // Provide a JSON response indicating that the file is ready for download
+        return $this->response->setJSON([
+            'status' => 'success',
+            'message' => 'Excel file is ready for download.',
+        ]);
+    }
+
+    public function ExcelReport()
+    {
+        $fromDate = $this->request->getPost('fromDate');
+        $toDate = $this->request->getPost('toDate');
+
+        // Check if inputs are empty
+        if (empty($fromDate) || empty($toDate)) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => "Please select both 'From' and 'To' dates to download the report.",
+            ]);
+        }
+
+        $empModel = new \App\Models\UserModel();
+        $offcModel = new \App\Models\EmployeeModel();
+        $spreadsheet = new Spreadsheet();
+
+        // Fetch data based on filters
+        $result = $empModel->getAttendanceByDate($fromDate, $toDate);
+        $latLangResult = $offcModel->getlatLongData();
+
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Set column headers
+        $sheet->setCellValue("A1", "ID");
+        $sheet->setCellValue("B1", "Employee Name");
+        $sheet->setCellValue("C1", "Employee Email");
+        $sheet->setCellValue("D1", "Employee Phone Number");
+        $sheet->setCellValue("E1", "Date");
+        $sheet->setCellValue("F1", "Time");
+        $sheet->setCellValue("G1", "Employee Latitude");
+        $sheet->setCellValue("H1", "Employee Longitude");
+        $sheet->setCellValue("I1", "Office Latitude");
+        $sheet->setCellValue("J1", "Office Longitude");
+        $sheet->setCellValue("K1", "Employee Address");
+
+        // Set width for each column 
+        $sheet->getColumnDimension('A')->setWidth(15);
+        $sheet->getColumnDimension('B')->setWidth(20);
+        $sheet->getColumnDimension('C')->setWidth(30);
+        $sheet->getColumnDimension('D')->setWidth(20);
+        $sheet->getColumnDimension('E')->setWidth(15);
+        $sheet->getColumnDimension('F')->setWidth(15);
+        $sheet->getColumnDimension('G')->setWidth(15);
+        $sheet->getColumnDimension('H')->setWidth(15);
+        $sheet->getColumnDimension('I')->setWidth(15);
+        $sheet->getColumnDimension('J')->setWidth(15);
+        $sheet->getColumnDimension('K')->setWidth(30);
+
+        $count = 2;
+        foreach ($result as $index => $row) {
+            $sheet->setCellValue("A" . $count, $row['emp_id']);
+            $sheet->setCellValue("B" . $count, $row['emp_name']);
+            $sheet->setCellValue("C" . $count, $row['emp_email']);
+            $sheet->setCellValue("D" . $count, $row['emp_phone']);
+            $sheet->setCellValue("E" . $count, $row['date']);
+            $sheet->setCellValue("F" . $count, $row['time']);
+            $sheet->setCellValue("G" . $count, $row['latitude']);
+            $sheet->setCellValue("H" . $count, $row['longitude']);
+            $sheet->setCellValue("K" . $count, $row['city']);
+
+            // Find the corresponding office latitude and longitude
+            $officeLat = '';
+            $officeLong = '';
+            foreach ($latLangResult as $office) {
+                if ($office['emp_id'] == $row['emp_id']) {
+                    $officeLat = $office['latitude'];
+                    $officeLong = $office['longitude'];
+                    break;
+                }
+            }
+
+            // Populate office latitude and longitude
+            $sheet->setCellValue("I" . $count, $officeLat);
+            $sheet->setCellValue("J" . $count, $officeLong);
+            $count++;
+        }
+        // Generate timestamp
+        $timestamp = date('Ymd_His');
+
+        // Define the filename with timestamp
+        $filename = "Employee-Data_" . $timestamp . ".xlsx";
+
+        // Save the spreadsheet with the filename including the timestamp
+        $writer = new Xlsx($spreadsheet);
+        $writer->save($filename);
+        // Provide a JSON response indicating that the file is ready for download
+        return $this->response->setJSON([
+            'status' => 'success',
+            'message' => 'Excel file is ready for download.',
+        ]);
+    }
+
 }

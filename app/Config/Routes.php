@@ -47,4 +47,6 @@ $routes->group('admin', ['filter' => 'IsAdminLogin'], static function ($routes){
     $routes->get('reports', 'Home::reports');
     $routes->get('fetchreports', 'Home::fetchReports');
     $routes->post('reset_password', 'Home::resetPasswordMail');
+    $routes->post('NdlExcel', 'Home::DownloadExcelNameWise');
+    $routes->post('ExcelReport', 'Home::ExcelReport');
 });

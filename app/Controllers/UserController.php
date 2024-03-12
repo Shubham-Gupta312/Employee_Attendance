@@ -148,7 +148,7 @@ class UserController extends BaseController
             'emp_name' => $name,
             'emp_email' => $email,
             'emp_phone' => $phone,
-            'date' => $date,
+            'date' => date('Y-m-d'),
             'time' => $time,
             'latitude' => $latitude,
             'longitude' => $longitude,
